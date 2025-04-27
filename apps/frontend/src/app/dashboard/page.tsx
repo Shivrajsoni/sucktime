@@ -128,6 +128,7 @@ function App() {
   const { getToken } = useAuth();
 
   const processedWebsites = useMemo(() => {
+    if(!websites) return [];
     return websites.map(website => {
       // Sort ticks by creation time
       const sortedTicks = [...website.ticks].sort((a, b) => 
@@ -236,7 +237,7 @@ function App() {
 
             const token = await getToken();
             setIsModalOpen(false)
-            axios.post(`${API_BACKEND_URL}/api/v1/websites`, {
+            axios.post(`${API_BACKEND_URL}/api/v1/website`, {
                 url,
             }, {
                 headers: {

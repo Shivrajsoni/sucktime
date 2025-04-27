@@ -1,11 +1,12 @@
 import express from "express";
 import { AuthMiddleware } from "./middleware";
 import { prisma } from "@repo/db/client";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
-
+app.use(cors());
 app.post('/api/v1/website',AuthMiddleware,async(req,res)=>{
     try {
         const userId = req.userId!;
@@ -48,9 +49,9 @@ app.get('/api/v1/website/status',AuthMiddleware,async(req,res)=>{
 })
 
 app.get('/api/v1/websites',AuthMiddleware,async(req,res)=>{
-    const userId = req.userId;
+    const userId = req.userId!;
     try {
-        const data = await prisma.website.findMany({
+        const websites = await prisma.website.findMany({
             where:{
                 userId,
                 disabled:false
@@ -60,7 +61,7 @@ app.get('/api/v1/websites',AuthMiddleware,async(req,res)=>{
             }
         })
         console.log('/api/v1/websites is working properly ' );
-        res.json(data);
+        res.json({websites});
     } catch (error) {
         console.log(error);
         throw new Error(`Error in /api/v1/websites api `);
